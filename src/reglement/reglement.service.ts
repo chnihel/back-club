@@ -5,24 +5,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IReglement } from './interface/interface.reglement';
 import mongoose, { Model } from 'mongoose';
 import { IRessource } from 'src/ressources/interface/interface.ressource';
+import { IClub } from 'src/club/interface/interface.club';
 
 @Injectable()
 export class ReglementService {
   constructor(
-    @InjectModel("reglement") private reglementModel:Model<IReglement>,@InjectModel("ressource") private ressourceModel:Model<IRessource>) {}
+    @InjectModel("ressource") private reglementModel:Model<IReglement>,@InjectModel("club") private clubModel:Model<IClub>) {}
 
     //methode creat
      async ajouterreglement(CreatereglementDto:CreateReglementDto):Promise<IReglement> {
       const newreglement =await new this.reglementModel(CreatereglementDto)
       const savereglement= await newreglement.save() as IReglement
-      const ressourceId= await this.ressourceModel.findById(CreatereglementDto.ressource)
-          if(ressourceId){
-             
-            ressourceId.reglement.push(savereglement._id as mongoose.Types.ObjectId)
-            const saveressource = await ressourceId.save()
-            console.log(saveressource) 
-          } 
-         return newreglement
+      const clubId= await this.clubModel.findById(CreatereglementDto.club)
+                 if(clubId){ 
+                  clubId.reglement.push(savereglement._id as mongoose.Types.ObjectId)
+                   const saveClub = await clubId.save()
+                   console.log(saveClub) 
+                 }
+         return savereglement
         }
 
     //methode get
@@ -31,17 +31,17 @@ export class ReglementService {
       return listereglement
     }
     //methode delete
-  async supprimerreglement(chambid:string):Promise<IReglement>{
-    const deleteData=await this.reglementModel.findByIdAndDelete(chambid)
+  async supprimerreglement(id:string):Promise<IReglement>{
+    const deleteData=await this.reglementModel.findByIdAndDelete(id)
     if(!deleteData){
-      throw new NotFoundException(`reglement avec l'id ${chambid} est introuvable`)
+      throw new NotFoundException(`reglement avec l'id ${id} est introuvable`)
     }
-   const updateressource = await this.ressourceModel.findById(deleteData.ressource)
-    if(updateressource){
-      updateressource.reglement =updateressource.reglement.filter(chambId => chambId.toString()!== chambid)
-      await updateressource.save()
-    }else{
-    throw new NotFoundException(`reglement #${chambid} est introuvable dans le ressource`)} 
+     const updateClub = await this.clubModel.findById(deleteData.club)
+         if(updateClub){
+          updateClub.reglement =updateClub.reglement.filter(chambId => chambId.toString()!== id)
+           await updateClub.save()
+         }else{
+         throw new NotFoundException(`evenement #${id} est introuvable dans le derigeant`)} 
       return deleteData
   }
 

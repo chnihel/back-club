@@ -5,9 +5,7 @@ export class CreateRessourceDto {
     @IsString()
     @IsNotEmpty()
     titre: string
-    @IsString()
-    @IsNotEmpty()
-    type: string
+  
     @IsString()
     @IsNotEmpty()
     contenu: string

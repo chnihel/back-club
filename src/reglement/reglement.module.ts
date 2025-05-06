@@ -4,9 +4,10 @@ import { ReglementController } from './reglement.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { reglementSchema } from './entities/reglement.entity';
 import { ressourceSchema } from 'src/ressources/entities/ressource.entity';
+import { clubSchema } from 'src/club/entities/club.entity';
 
 @Module({
-  imports:[MongooseModule.forFeature([{name:'reglement',schema:reglementSchema},{name:'ressource',schema:ressourceSchema}])],
+  imports:[MongooseModule.forFeature([{name:'ressource',schema:ressourceSchema},{name:'club',schema:clubSchema}])],
   controllers: [ReglementController],
   providers: [ReglementService],
 })

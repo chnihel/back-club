@@ -9,10 +9,10 @@ import { Iderigeant } from 'src/derigeant_club/interface/interface.derigeant';
 @Injectable()
 export class RessourcesService {
    constructor(
-      @InjectModel("ressource") private ressourceModel:Model<IRessource>,@InjectModel("user") private derigeantModel:Model<Iderigeant>) {}
+      @InjectModel("ressource") private ressourceModel:Model<IRessource>) {}
   
       //methode creat
-       async ajouterressource(CreateressourceDto:CreateRessourceDto):Promise<IRessource> {
+      /*  async ajouterressource(CreateressourceDto:CreateRessourceDto):Promise<IRessource> {
         const newressource =await new this.ressourceModel(CreateressourceDto)
         const saveressource= await newressource.save() as IRessource
         const derigeantId= await this.derigeantModel.findById(CreateressourceDto.derigeantClub)
@@ -23,7 +23,7 @@ export class RessourcesService {
               console.log(savederigeant) 
             } 
            return newressource
-          }
+          } */
   
       //methode get
       async listeressource():Promise<IRessource[]>{
@@ -31,7 +31,7 @@ export class RessourcesService {
         return listeressource
       }
       //methode delete
-    async supprimerressource(chambid:string):Promise<IRessource>{
+   /*  async supprimerressource(chambid:string):Promise<IRessource>{
       const deleteData=await this.ressourceModel.findByIdAndDelete(chambid)
       if(!deleteData){
         throw new NotFoundException(`ressource avec l'id ${chambid} est introuvable`)
@@ -43,7 +43,7 @@ export class RessourcesService {
       }else{
       throw new NotFoundException(`ressource #${chambid} est introuvable dans le derigeant`)}
         return deleteData
-    }
+    } */
   
     //methode update
     async modifierressource(id:string,UpdateressourceDto:UpdateRessourceDto):Promise<IRessource>{

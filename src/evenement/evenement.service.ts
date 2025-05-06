@@ -34,7 +34,7 @@ export class EvenementService {
  
      //methode get
      async listeevenement():Promise<Ievenement[]>{
-       const listeevenement=await this.evenementModel.find()
+       const listeevenement=await this.evenementModel.find().populate('club').populate('derigeantClub')
        return listeevenement
      }
      //methode delete
@@ -47,6 +47,12 @@ export class EvenementService {
      if(updatederigeant){
        updatederigeant.evenement =updatederigeant.evenement.filter(chambId => chambId.toString()!== chambid)
        await updatederigeant.save()
+     }else{
+     throw new NotFoundException(`evenement #${chambid} est introuvable dans le derigeant`)} 
+     const updateClub = await this.clubModel.findById(deleteData.derigeantClub)
+     if(updateClub){
+      updateClub.evenement =updateClub.evenement.filter(chambId => chambId.toString()!== chambid)
+       await updateClub.save()
      }else{
      throw new NotFoundException(`evenement #${chambid} est introuvable dans le derigeant`)} 
        return deleteData
@@ -62,10 +68,13 @@ export class EvenementService {
      }
      //methode get by id
      async getbyid(id:string): Promise<Ievenement>{
-       const getevenement=await this.evenementModel.findById(id)
+       const getevenement=await this.evenementModel.findById(id).populate('membres')
        if(!getevenement){
          throw new NotFoundException(`evenement avec l'id ${id}, existe pas `)
        }
        return getevenement
    }
+
+
+   
 }

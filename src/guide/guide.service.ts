@@ -5,25 +5,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { IGuide } from './ineterface/interface.guide';
 import mongoose from 'mongoose';
-import { IRessource } from 'src/ressources/interface/interface.ressource';
+import { IClub } from 'src/club/interface/interface.club';
 
 @Injectable()
 export class GuideService {
    constructor(
-      @InjectModel("guide") private guideModel:Model<IGuide>,@InjectModel("ressource") private ressourceModel:Model<IRessource>) {}
+      @InjectModel("ressource") private guideModel:Model<IGuide>,@InjectModel("club") private clubModel:Model<IClub>) {}
   
       //methode creat
        async ajouterguide(CreateguideDto:CreateGuideDto):Promise<IGuide> {
         const newguide =await new this.guideModel(CreateguideDto)
         const saveguide= await newguide.save() as IGuide
-        const ressoirceId= await this.ressourceModel.findById(CreateguideDto.ressource) as IRessource
-            if(ressoirceId){
-               
-              ressoirceId.guide.push(saveguide._id as mongoose.Types.ObjectId)
-              const saveRessource = await ressoirceId.save()
-              console.log(saveRessource) 
-            }
-           return newguide
+        const clubId= await this.clubModel.findById(CreateguideDto.club)
+        if(clubId){ 
+         clubId.guide.push(saveguide._id as mongoose.Types.ObjectId)
+          const saveclub = await clubId.save()
+          console.log(saveclub) 
+        }
+           return saveguide
           }
   
       //methode get
@@ -37,12 +36,13 @@ export class GuideService {
       if(!deleteData){
         throw new NotFoundException(`guide avec l'id ${Guideid} est introuvable`)
       }
-       const updateressource = await this.ressourceModel.findById(deleteData.ressource) as IRessource
-      if(updateressource){
-        updateressource.guide =updateressource.guide.filter(chambId => chambId.toString()!== Guideid)
-        await updateressource.save()
-      }else{
-      throw new NotFoundException(`guide #${Guideid} est introuvable dans le ressource`)}  
+      const updateclub = await this.clubModel.findById(deleteData.club)
+     if(updateclub){
+       updateclub.guide =updateclub.guide.filter(chambId => chambId.toString()!== Guideid)
+       await updateclub.save()
+     }else{
+     throw new NotFoundException(`evenement #${Guideid} est introuvable dans le club`)} 
+      
         return deleteData
     }
   

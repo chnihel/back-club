@@ -10,7 +10,7 @@ import { extname } from 'path';
 export class MutimediaController {
   constructor(private readonly multimediaService: MutimediaService) { }
 
-  @UseInterceptors(FilesInterceptor('format', 10, {
+  @UseInterceptors(FilesInterceptor('format', 20, {
     storage: diskStorage({
       destination: './storage',
       filename: (req, file, cb) => {
@@ -64,7 +64,7 @@ export class MutimediaController {
       })
     }
   }
-  @UseInterceptors(FilesInterceptor('format', 10, {
+  @UseInterceptors(FilesInterceptor('format', 20, {
     storage: diskStorage({
       destination: './storage',
       filename: (req, file, cb) => {

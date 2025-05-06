@@ -129,7 +129,7 @@ export class UserService {
               <h1>Vérification de votre compte</h1>
               <p>Votre code de vérification est : <span class="verification-code">${verificationCode}</span></p>
               <p>Veuillez cliquer sur le lien ci-dessous pour valider votre compte :</p>
-              <a href="http://localhost:3000/user/verifyCode/${verificationCode}" class="btn">Vérifier mon compte</a>
+              <a href="http://localhost:5000/user/verifyCode/${verificationCode}" class="btn">Vérifier mon compte</a>
               <div class="footer">
                 <p>Si vous n'avez pas demandé cette vérification, vous pouvez ignorer cet email.</p>
                 <p>Merci de votre confiance !</p> 

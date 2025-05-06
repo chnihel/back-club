@@ -7,7 +7,7 @@ import { UpdateRessourceDto } from './dto/update-ressource.dto';
 export class RessourcesController {
   constructor(private readonly ressourcesService: RessourcesService) {}
 
-   @Post()
+  /*  @Post()
     async créerRessource(@Res() response,@Body() CreateRessourceDto:CreateRessourceDto){
       try{
         const newRessource=await this.ressourcesService.ajouterressource(CreateRessourceDto)
@@ -21,7 +21,7 @@ export class RessourcesController {
         message:"Essaie encore"+error
       })
       }
-    }
+    } */
     @Get()
       async listeRessource(@Res()reponse){
       try {
@@ -36,7 +36,7 @@ export class RessourcesController {
      })
      }
      }
-     @Delete('/:id')
+   /*   @Delete('/:id')
      async supprimerRessource(@Res() response,@Param('id')clientId:string){
        try{
          const DataDelete=await this.ressourcesService.supprimerressource(clientId)
@@ -49,7 +49,7 @@ export class RessourcesController {
            message:"Ressource not delete"+error
          })
        }
-     }
+     } */
    
     @Put(':id')
     async modifierRessource(@Res() response, @Param('id') RessourceId: string, @Body() UpdateRessourceDto: UpdateRessourceDto) {

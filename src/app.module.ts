@@ -17,6 +17,8 @@ import { ClubModule } from './club/club.module';
 import { EvenementModule } from './evenement/evenement.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PaiementModule } from './paiement/paiement.module';
+import { SuperAdminModule } from './super_admin/super_admin.module';
 
 @Module({
 
@@ -37,6 +39,8 @@ import { ConfigModule } from '@nestjs/config';
     EvenementModule,
     AuthModule,
     ConfigModule.forRoot({isGlobal: true}),
+    PaiementModule,
+    SuperAdminModule,
   ],
 
   controllers: [AppController],

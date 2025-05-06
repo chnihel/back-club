@@ -10,7 +10,7 @@ import * as argon2 from 'argon2'
 @Injectable()
 export class MembreService {
  constructor(
-     @InjectModel('user') private membreModel:Model<IMembre>,@InjectModel('club') private clubModel:Model<IClub>,
+     @InjectModel('user') private membreModel:Model<IMembre>,@InjectModel('club') private clubModel:Model<IClub>,@InjectModel('event') private eventModel:Model<IClub>,
      private readonly userService: UserService
    ) {}
     hashData(data:string){
@@ -37,6 +37,7 @@ export class MembreService {
  
      return { membre: updatedmembre };
    }
+
  
    // Méthode pour récupérer tous les membres -- findAll()
    async findAllmembre(): Promise<IMembre[]> {
@@ -71,7 +72,8 @@ export class MembreService {
    async suivreClub(membreId: string, clubId: string): Promise<any> {
     const membre = await this.membreModel.findById(membreId);
     const club = await this.clubModel.findById(clubId);
-
+    console.log('membreId reçu:', membreId);
+    console.log('eventId reçu:', clubId);
     if (!membre || !club) {
       throw new NotFoundException('Membre ou Club introuvable');
     }
@@ -117,5 +119,31 @@ export class MembreService {
   
     return { message: 'Club désuivi avec succès.' };
   }
+
+  async suivreEvent(membreId: string, eventId: string): Promise<any> {
+    const membre = await this.membreModel.findById(membreId);
+    const event = await this.eventModel.findById(eventId);
+    console.log('membreId reçu:', membreId);
+    console.log('eventId reçu:', eventId);
+    if (!membre || !event) {
+      throw new NotFoundException('Membre ou event introuvable');
+    }
+
+
+    const membreObjectId = new Types.ObjectId(membreId);
+    const eventObjectId = new Types.ObjectId(eventId);
+
+    if (event.membres.includes(membreObjectId)) {
+      return { message: 'Le membre suit déjà ce club.' };
+    }
+
+    event.membres.push(membreObjectId);
+    await event.save();
+    membre.event.push(eventObjectId); 
+    await membre.save();
+
+    return { message: 'Club suivi avec succès.' };
+  }
+
   
 }

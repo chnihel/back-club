@@ -5,24 +5,24 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IMultimedia } from './interface/interface.multimedia';
 import mongoose, { Model } from 'mongoose';
 import { IRessource } from 'src/ressources/interface/interface.ressource';
+import { IClub } from 'src/club/interface/interface.club';
 
 @Injectable()
 export class MutimediaService {
   constructor(
-    @InjectModel("multimedia") private multimediaModel:Model<IMultimedia>,@InjectModel("ressource") private ressourceModel:Model<IRessource>) {}
+    @InjectModel("ressource") private multimediaModel:Model<IMultimedia>,@InjectModel("club") private clubModel:Model<IClub>) {}
 
     //methode creat
      async ajoutermultimedia(CreatemultimediaDto:CreateMutimediaDto):Promise<IMultimedia> {
       const newmultimedia =await new this.multimediaModel(CreatemultimediaDto)
       const savemultimedia= await newmultimedia.save() as IMultimedia
-      const ressourceId= await this.ressourceModel.findById(CreatemultimediaDto.ressource)
-          if(ressourceId){
-             
-            ressourceId.multimedia.push(savemultimedia._id as mongoose.Types.ObjectId)
-            const saveressource = await ressourceId.save()
-            console.log(saveressource) 
-          }
-         return newmultimedia
+      const clubId= await this.clubModel.findById(CreatemultimediaDto.club)
+      if(clubId){ 
+       clubId.multimedia.push(savemultimedia._id as mongoose.Types.ObjectId)
+        const saveClub = await clubId.save()
+        console.log(saveClub) 
+      }
+         return savemultimedia
         }
 
     //methode get
@@ -31,23 +31,24 @@ export class MutimediaService {
       return listemultimedia
     }
     //methode delete
-  async supprimermultimedia(chambid:string):Promise<IMultimedia>{
-    const deleteData=await this.multimediaModel.findByIdAndDelete(chambid)
+  async supprimermultimedia(id:string):Promise<IMultimedia>{
+    const deleteData=await this.multimediaModel.findByIdAndDelete(id)
     if(!deleteData){
-      throw new NotFoundException(`multimedia avec l'id ${chambid} est introuvable`)
+      throw new NotFoundException(`multimedia avec l'id ${id} est introuvable`)
     }
-    const updateressource = await this.ressourceModel.findById(deleteData.ressource)
-    if(updateressource){
-      updateressource.multimedia =updateressource.multimedia.filter(chambId => chambId.toString()!== chambid)
-      await updateressource.save()
-    }else{
-    throw new NotFoundException(`multimedia #${chambid} est introuvable dans le ressource`)} 
+    const updateClub = await this.clubModel.findById(deleteData.club)
+         if(updateClub){
+          updateClub.multimedia =updateClub.multimedia.filter(chambId => chambId.toString()!== id)
+           await updateClub.save()
+         }else{
+         throw new NotFoundException(`evenement #${id} est introuvable dans le club`)} 
+
       return deleteData
   }
 
   //methode update
   async modifiermultimedia(id:string,UpdatemultimediaDto:UpdateMutimediaDto):Promise<IMultimedia>{
-    const updateData=await this.multimediaModel.findByIdAndUpdate (id,UpdatemultimediaDto,{new:true})
+    const updateData=await this.multimediaModel.findOneAndUpdate ({_id:id,type:"multimedia"},UpdatemultimediaDto,{new:true})
     if(!updateData){
       throw new NotFoundException(`multimedia avec l'id ${id}, existe pas`);
     } 

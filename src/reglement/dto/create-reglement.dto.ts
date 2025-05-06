@@ -1,11 +1,13 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { Types } from "mongoose";
+import { CreateRessourceDto } from "src/ressources/dto/create-ressource.dto";
 
-export class CreateReglementDto {
+export class CreateReglementDto extends CreateRessourceDto {
+    type:string
     @IsString()
     @IsNotEmpty()
     version:string
-        ressource: Types.ObjectId
-    
+    club: Types.ObjectId;
+
 
 }

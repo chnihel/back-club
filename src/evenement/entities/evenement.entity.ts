@@ -9,10 +9,14 @@ export class Evenement {
     dateEvent:Date
     @Prop()
     lieuEvent:string
+    @Prop()
+    frais:number
     @Prop({ type: mongoose.Schema.Types.ObjectId,ref: 'user'})
     derigeantClub: Types.ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId,ref: 'club'})
     club: Types.ObjectId;
+     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }] })
+        membres: Types.ObjectId[]
 
 
 }

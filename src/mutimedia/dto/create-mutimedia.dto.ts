@@ -1,10 +1,11 @@
 import { IsNotEmpty, IsString } from "class-validator";
 import { Types } from "mongoose";
+import { CreateRessourceDto } from "src/ressources/dto/create-ressource.dto";
 
-export class CreateMutimediaDto {
-  
+export class CreateMutimediaDto extends CreateRessourceDto {
+  type:string
     format:string[]
-            ressource: Types.ObjectId
-    
+    club: Types.ObjectId;
+
 
 }

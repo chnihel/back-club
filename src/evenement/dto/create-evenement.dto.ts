@@ -11,8 +11,12 @@ export class CreateEvenementDto {
      @IsString()
      @IsNotEmpty()
      lieuEvent:string
+     frais:number
+
     derigeantClub: Types.ObjectId;
     club: Types.ObjectId;
+    membres: Types.ObjectId[]
+
 
      
     }

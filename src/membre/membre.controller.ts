@@ -116,7 +116,7 @@ export class MembreController {
   async suiviClub(
   @Res() response,
   @Param('membreId') membreId: string,
-  @Body('club') clubId: string // Assure-toi que c'est bien "club" dans le body
+  @Body('clubId') clubId: string // Assure-toi que c'est bien "club" dans le body
 ) {
   try {
     const suivi = await this.membreService.suivreClub(membreId, clubId);
@@ -150,6 +150,26 @@ async desuiviClub(
       error: 'Bad Request',
     });
   }
+}
+
+@Post('suiviEvent/:membreId')
+async suiviEvent(
+@Res() response,
+@Param('membreId') membreId: string,
+@Body('eventId') eventId: string 
+) {
+try {
+  const suivi = await this.membreService.suivreEvent(membreId, eventId);
+  return response.status(HttpStatus.OK).json({
+    message: `Membre with ID ${membreId} has followed event ${eventId} successfully.`,
+    data: suivi,
+  });
+} catch (error) {
+  return response.status(HttpStatus.BAD_REQUEST).json({
+    message: `Erreur lors du suivi du club : ${error.message}`,
+    error: 'Bad Request',
+  });
+}
 }
 
 }
