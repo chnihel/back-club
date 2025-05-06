@@ -3,28 +3,32 @@ import * as firebase from 'firebase-admin';
 import { sendNotificationDTO } from './dto/send-notification.dto';
 @Injectable()
 export class NotificationService {
-    async sendNotif(notification: sendNotificationDTO) {
+  async sendNotifToMultiple(notification: sendNotificationDTO) {
     try {
-      console.log('Token Firebase reçu:', notification.deviceId);
-      await firebase
-        .messaging()
-        .send({
-    
-          notification: {
-            title: notification.title,
-            body: notification.body,
-          },
-          token: notification.deviceId,
-          data: {},
-        })
-        .catch((error: any) => {
-          console.error(error);
-        });
+      if (!notification.deviceIds || notification.deviceIds.length === 0) {
+        throw new Error('deviceIds est requis et ne peut pas être vide');
+      }
+  
+      console.log('Token Firebase reçu for backend:', notification.deviceIds);
+  
+      const message = {
+        notification: {
+          title: notification.title,
+          body: notification.body,
+        },
+        tokens: notification.deviceIds,
+      };
+  
+      const response = await firebase.messaging().sendEachForMulticast(message);
+      console.log(`${response.successCount} notifications envoyées.`);
+      return response;
     } catch (error) {
-      console.log(error);
-      return error;
+      console.error('Erreur d’envoi Firebase:', error);
+      throw error;
     }
-  } 
+  }
+
+  
 
  
 }

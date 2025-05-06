@@ -11,6 +11,6 @@ export class NotificationController {
 
   @Post()
   sendNotification(@Body() pushNotification: sendNotificationDTO) {
-    this.notificationService.sendNotif(pushNotification);
+    this.notificationService.sendNotifToMultiple(pushNotification);
   }
 }

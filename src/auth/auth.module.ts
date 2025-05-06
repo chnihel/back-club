@@ -4,6 +4,8 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AccessTokenStrategy } from './strategies/accessToken-strategy';
+import { RefreshTokenStrategy } from './strategies/refreshToken-strategy';
 
 @Module({
   imports: [JwtModule.register({}), UserModule, MailerModule.forRoot({
@@ -17,6 +19,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
     }
   })],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService,AccessTokenStrategy,RefreshTokenStrategy],
 })
 export class AuthModule {}

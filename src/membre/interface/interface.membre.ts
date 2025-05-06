@@ -9,5 +9,5 @@ export interface IMembre extends IUser{
 
     club: Types.ObjectId[] 
     event: Types.ObjectId[]
-
+    fcmToken?: string;
 }

@@ -10,7 +10,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
 
   // 🔹 Servir les fichiers statiques depuis le dossier "storage"
-  app.useStaticAssets(join(__dirname, '..', 'storage'), { prefix: '/file' });  
+/*   app.useStaticAssets(join(__dirname, '..', 'storage'), { prefix: '/file' });   */
   app.use('/static', express.static(join(__dirname, '..', 'public')));
   app.use('/paiement/webhook', bodyParser.raw({ type: '*/*' })); // <- important
 

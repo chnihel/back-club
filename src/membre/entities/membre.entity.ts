@@ -37,6 +37,8 @@ export class Membre extends User {
   club: ClubPaiement[];
   @Prop({ type: [EventPaiementSchema], default: [] })
   event: EventPaiement[];
+  @Prop()
+  fcmToken:string
 
 }
 export const membreSchema = SchemaFactory.createForClass(Membre)

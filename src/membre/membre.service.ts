@@ -145,5 +145,10 @@ export class MembreService {
     return { message: 'Club suivi avec succès.' };
   }
 
+
+  async saveFcmToken(sub: string, fcmToken: string) {
+    console.log('Recherche avec:', { _id: sub, role: 'membre' });
+    return this.membreModel.findOneAndUpdate({_id:sub,role:"membre"}, { fcmToken }, { new: true });
+  }
   
 }

@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Put, UseInterceptors, UploadedFile, Request, UseGuards } from '@nestjs/common';
 import { MembreService } from './membre.service';
 import { CreateMembreDto } from './dto/create-membre.dto';
 import { UpdateMembreDto } from './dto/update-membre.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {diskStorage} from 'multer'
 import { extname } from 'path';
+import { AccessTokenGuard } from 'src/commen/guards/accessToken.guards';
+import { RefreshTokenGuard } from 'src/commen/guards/refreshToken.guards';
 @Controller('membre')
 export class MembreController {
   constructor(private readonly membreService: MembreService) {}
@@ -33,6 +35,18 @@ export class MembreController {
       })
     }
   }
+  @Post('fcm-token')
+  @UseGuards(RefreshTokenGuard)
+async saveFcmToken(@Request() req, @Body('fcmToken') token: string) {
+  console.log('ID reçu dans le controller:', req.user.sub);
+
+  const updatedMembre = await this.membreService.saveFcmToken(req.user.sub, token);
+  return {
+    message: 'Token FCM enregistré avec succès',
+    membre: updatedMembre,
+  };
+}
+
 
   @Get()
   async findAllMembre(@Res() response) {

@@ -5,9 +5,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GuideSchema } from './entities/guide.entity';
 import { ressourceSchema } from 'src/ressources/entities/ressource.entity';
 import { clubSchema } from 'src/club/entities/club.entity';
+import { userSchema } from 'src/user/entities/user.entity';
+import { NotificationModule } from 'src/notification/notification.module';
 
 @Module({
-  imports:[MongooseModule.forFeature([{name:'ressource',schema:ressourceSchema},{name:'club',schema:clubSchema}])],
+  imports:[MongooseModule.forFeature([{name:'ressource',schema:ressourceSchema},{name:'club',schema:clubSchema},{name:'user',schema:userSchema}]),NotificationModule],
   controllers: [GuideController],
   providers: [GuideService],
 })
