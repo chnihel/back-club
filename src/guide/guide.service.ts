@@ -9,12 +9,13 @@ import { IClub } from 'src/club/interface/interface.club';
 import { IMembre } from 'src/membre/interface/interface.membre';
 import { NotificationService } from 'src/notification/notification.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { RessourcesService } from 'src/ressources/ressources.service';
 
 @Injectable()
 export class GuideService {
   constructor(
     @InjectModel("ressource") private guideModel: Model<IGuide>, @InjectModel("club") private clubModel: Model<IClub>,
-    @InjectModel("user") private MembreModel: Model<IMembre>, private readonly notificationService: NotificationService,private mailerService: MailerService) { }
+   private ressouceService: RessourcesService) { }
 
   //methode creat
   async ajouterguide(CreateguideDto: CreateGuideDto): Promise<IGuide> {
@@ -25,7 +26,7 @@ export class GuideService {
       clubId.guide.push(saveguide._id as mongoose.Types.ObjectId)
       const saveclub = await clubId.save()
       console.log(saveclub)
-      const membres = await this.MembreModel.find({
+     /*  const membres = await this.MembreModel.find({
         club: {
           $elemMatch: {
             clubId: clubId._id,
@@ -57,10 +58,19 @@ export class GuideService {
       
           await this.mailerService.sendMail(option);
         }
-      }
+      } */
+        await this.ressouceService.notifierNouveauContenu(
+          clubId._id as mongoose.Types.ObjectId,
+          'guide',
+          'Nouveau guide ajouté !',
+          `Le club ${clubId.nomClub} vient de publier un nouveau guide.`,
+          'Nouveau guide ajouté !',
+          `<h1>Le club ${clubId.nomClub} a ajouté un nouveau guide</h1>`
+        );
     }
     return saveguide
   }
+
 
   //methode get
   async listeguide(): Promise<IGuide[]> {

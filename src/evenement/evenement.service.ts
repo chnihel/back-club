@@ -38,25 +38,36 @@ export class EvenementService {
        return listeevenement
      }
      //methode delete
-   async supprimerevenement(chambid:string):Promise<Ievenement>{
-     const deleteData=await this.evenementModel.findByIdAndDelete(chambid)
-     if(!deleteData){
-       throw new NotFoundException(`evenement avec l'id ${chambid} est introuvable`)
-     }
-      const updatederigeant = await this.derigeantModel.findById(deleteData.derigeantClub)
-     if(updatederigeant){
-       updatederigeant.evenement =updatederigeant.evenement.filter(chambId => chambId.toString()!== chambid)
-       await updatederigeant.save()
-     }else{
-     throw new NotFoundException(`evenement #${chambid} est introuvable dans le derigeant`)} 
-     const updateClub = await this.clubModel.findById(deleteData.derigeantClub)
-     if(updateClub){
-      updateClub.evenement =updateClub.evenement.filter(chambId => chambId.toString()!== chambid)
-       await updateClub.save()
-     }else{
-     throw new NotFoundException(`evenement #${chambid} est introuvable dans le derigeant`)} 
-       return deleteData
-   }
+     async supprimerevenement(chambid: string): Promise<any> {
+      const evenement = await this.evenementModel.findById(chambid);
+      if (!evenement) {
+        throw new NotFoundException(`evenement avec l'id ${chambid} est introuvable`);
+      }
+    
+      const updatederigeant = await this.derigeantModel.findById(evenement.derigeantClub);
+      if (updatederigeant) {
+        updatederigeant.evenement = updatederigeant.evenement.filter(
+          chambId => chambId.toString() !== chambid
+        );
+        await updatederigeant.save();
+      } else {
+        console.warn(`Derigeant non trouvé pour evenement #${chambid}`);
+      }
+    
+      const updateClub = await this.clubModel.findById(evenement.club);
+      if (updateClub) {
+        updateClub.evenement = updateClub.evenement.filter(
+          chambId => chambId.toString() !== chambid
+        );
+        await updateClub.save();
+      } else {
+        console.warn(`Club non trouvé pour evenement #${chambid}`);
+      }
+    
+      const deleteData = await this.evenementModel.findByIdAndDelete(chambid);
+      return deleteData;
+    }
+    
  
    //methode update
    async modifierevenement(id:string,UpdateevenementDto:UpdateEvenementDto):Promise<Ievenement>{

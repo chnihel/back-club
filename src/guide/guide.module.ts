@@ -7,9 +7,10 @@ import { ressourceSchema } from 'src/ressources/entities/ressource.entity';
 import { clubSchema } from 'src/club/entities/club.entity';
 import { userSchema } from 'src/user/entities/user.entity';
 import { NotificationModule } from 'src/notification/notification.module';
+import { RessourcesModule } from 'src/ressources/ressources.module';
 
 @Module({
-  imports:[MongooseModule.forFeature([{name:'ressource',schema:ressourceSchema},{name:'club',schema:clubSchema},{name:'user',schema:userSchema}]),NotificationModule],
+  imports:[MongooseModule.forFeature([{name:'ressource',schema:ressourceSchema},{name:'club',schema:clubSchema}]),RessourcesModule],
   controllers: [GuideController],
   providers: [GuideService],
 })

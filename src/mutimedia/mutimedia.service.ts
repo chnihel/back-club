@@ -6,11 +6,12 @@ import { IMultimedia } from './interface/interface.multimedia';
 import mongoose, { Model } from 'mongoose';
 import { IRessource } from 'src/ressources/interface/interface.ressource';
 import { IClub } from 'src/club/interface/interface.club';
+import { RessourcesService } from 'src/ressources/ressources.service';
 
 @Injectable()
 export class MutimediaService {
   constructor(
-    @InjectModel("ressource") private multimediaModel:Model<IMultimedia>,@InjectModel("club") private clubModel:Model<IClub>) {}
+    @InjectModel("ressource") private multimediaModel:Model<IMultimedia>,@InjectModel("club") private clubModel:Model<IClub>,private ressouceService: RessourcesService) {}
 
     //methode creat
      async ajoutermultimedia(CreatemultimediaDto:CreateMutimediaDto):Promise<IMultimedia> {
@@ -21,6 +22,14 @@ export class MutimediaService {
        clubId.multimedia.push(savemultimedia._id as mongoose.Types.ObjectId)
         const saveClub = await clubId.save()
         console.log(saveClub) 
+        await this.ressouceService.notifierNouveauContenu(
+          clubId._id as mongoose.Types.ObjectId,
+          'multimedia',
+          'Nouveau multimedia ajouté !',
+          `Le club ${clubId.nomClub} vient de publier un nouveau multimedia.`,
+          'Nouveau multimedia ajouté !',
+          `<h1>Le club ${clubId.nomClub} a ajouté un nouveau multimedia</h1>`
+        );
       }
          return savemultimedia
         }

@@ -5,11 +5,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { IRessource } from './interface/interface.ressource';
 import { Iderigeant } from 'src/derigeant_club/interface/interface.derigeant';
+import { NotificationService } from 'src/notification/notification.service';
+import { MailerService } from '@nestjs-modules/mailer';
+import { IMembre } from 'src/membre/interface/interface.membre';
+import { IClub } from 'src/club/interface/interface.club';
 
 @Injectable()
 export class RessourcesService {
    constructor(
-      @InjectModel("ressource") private ressourceModel:Model<IRessource>) {}
+      @InjectModel("ressource") private ressourceModel:Model<IRessource>,@InjectModel("user") private MembreModel: Model<IMembre>,@InjectModel("club") private clubModel: Model<IClub>,private readonly notificationService: NotificationService,private mailerService: MailerService) {}
   
       //methode creat
       /*  async ajouterressource(CreateressourceDto:CreateRessourceDto):Promise<IRessource> {
@@ -60,5 +64,49 @@ export class RessourcesService {
           throw new NotFoundException(`ressource avec l'id ${id}, existe pas `)
         }
         return getressource
+    }
+
+    //notificaton information
+    async notifierNouveauContenu(
+      clubId: mongoose.Types.ObjectId,
+      type: string, 
+      titreNotification: string,
+      corpsNotification: string,
+      sujetEmail: string,
+      contenuEmail: string
+    ): Promise<void> {
+      const club = await this.clubModel.findById(clubId);
+      if (!club) return;
+    
+      const membres = await this.MembreModel.find({
+        club: {
+          $elemMatch: {
+            clubId: club._id,
+            isPaid: true
+          }
+        }
+      });
+    
+      const tokens: string[] = membres
+        .map(m => m.fcmToken)
+        .filter((token): token is string => Boolean(token));
+    
+      if (tokens.length > 0) {
+        await this.notificationService.sendNotifToMultiple({
+          title: titreNotification,
+          body: corpsNotification,
+          deviceIds: tokens,
+        });
+      }
+    
+      for (const membre of membres) {
+        if (membre.email) {
+          await this.mailerService.sendMail({
+            to: membre.email,
+            subject: sujetEmail,
+            html: contenuEmail,
+          });
+        }
+      }
     }
 }

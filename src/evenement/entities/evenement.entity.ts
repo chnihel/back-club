@@ -15,8 +15,8 @@ export class Evenement {
     derigeantClub: Types.ObjectId;
     @Prop({ type: mongoose.Schema.Types.ObjectId,ref: 'club'})
     club: Types.ObjectId;
-     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }] })
-        membres: Types.ObjectId[]
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }] })
+    membres: Types.ObjectId[]
 
 
 }

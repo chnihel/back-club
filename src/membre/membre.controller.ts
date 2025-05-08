@@ -186,4 +186,36 @@ try {
 }
 }
 
+@Put('/updatePaidStatus/:membreId/:eventId')
+  async updatePaidStatus(@Res() response, @Param('membreId') membreId: string, @Param("eventId") eventId: string) {
+    try {
+      const updateMembre = await this.membreService.updatePaidMembre(membreId, eventId)
+      return response.status(HttpStatus.OK).json({
+        message: `Membre with ID ${membreId} is updated Successfully`,
+        data: updateMembre
+      })
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: `Membre with ID ${membreId} is not updated: ${error.message}`,
+        error: 'Bad Request'  
+      })
+    }
+  }
+
+  @Put('/updatePaidStatusForClub/:membreId/:clubId')
+  async updatePaidStatusForClub(@Res() response, @Param('membreId') membreId: string, @Param("clubId") clubId: string) {
+    try {
+      const updateMembre = await this.membreService.updatePaidMembreForClub(membreId, clubId)
+      return response.status(HttpStatus.OK).json({
+        message: `Membre with ID ${membreId} is updated Successfully`,
+        data: updateMembre
+      })
+    } catch (error) {
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        message: `Membre with ID ${membreId} is not updated: ${error.message}`,
+        error: 'Bad Request'  
+      })
+    }
+  }
+
 }

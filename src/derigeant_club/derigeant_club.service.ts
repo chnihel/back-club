@@ -48,7 +48,7 @@ export class DerigeantClubService {
 
   // Méthode pour récupérer un derigeant par son ID -- findOne
   async findOnederigeant(id: string): Promise<Iderigeant> {
-    const derigeantID = await this.derigeantModel.findById(id).populate('club').exec()
+    const derigeantID = await this.derigeantModel.findById(id).populate('club').populate('evenement').exec()
     if(!derigeantID) {
       throw new NotFoundException(`derigeant with ID ${id} is not found`)
     }

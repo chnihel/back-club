@@ -6,10 +6,11 @@ import mongoose, { Model } from 'mongoose';
 import { ITutoriel } from './interface/interface.tutoriel';
 import { IRessource } from 'src/ressources/interface/interface.ressource';
 import { IClub } from 'src/club/interface/interface.club';
+import { RessourcesService } from 'src/ressources/ressources.service';
 
 @Injectable()
 export class TutorielService {
-  constructor(@InjectModel("ressource") private tutorielModel:Model<ITutoriel>,@InjectModel("club") private clubModel:Model<IClub>) {}
+  constructor(@InjectModel("ressource") private tutorielModel:Model<ITutoriel>,@InjectModel("club") private clubModel:Model<IClub>,private ressouceService: RessourcesService) {}
 
     //methode creat
      async ajoutertutoriel(CreatetutorielDto:CreateTutorielDto):Promise<ITutoriel> {
@@ -20,6 +21,14 @@ export class TutorielService {
        clubId.tutoriel.push(savetutoriel._id as mongoose.Types.ObjectId)
         const saveClub = await clubId.save()
         console.log(saveClub) 
+        await this.ressouceService.notifierNouveauContenu(
+          clubId._id as mongoose.Types.ObjectId,
+          'reglement',
+          'Nouveau reglement ajouté !',
+          `Le club ${clubId.nomClub} vient de publier un nouveau reglement.`,
+          'Nouveau reglement ajouté !',
+          `<h1>Le club ${clubId.nomClub} a ajouté un nouveau reglement</h1>`
+        );
       }
          return savetutoriel
         }

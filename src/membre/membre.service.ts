@@ -47,7 +47,7 @@ export class MembreService {
  
    // Méthode pour récupérer un membre par son ID -- findOne
    async findOnemembre(id: string): Promise<IMembre> {
-     const membreID = await this.membreModel.findById(id).exec()
+     const membreID = await this.membreModel.findById(id).populate('eventId')
      if(!membreID) {
        throw new NotFoundException(`membre with ID ${id} is not found`)
      }
@@ -150,5 +150,27 @@ export class MembreService {
     console.log('Recherche avec:', { _id: sub, role: 'membre' });
     return this.membreModel.findOneAndUpdate({_id:sub,role:"membre"}, { fcmToken }, { new: true });
   }
-  
+//update Status (isPaid) for event
+  async updatePaidMembre(membreId:string,eventId:string){
+
+      const membre=await this.membreModel.findOneAndUpdate({_id:membreId,role:"membre","event.eventId":eventId},{$set:{'event.$.isPaid':true}},{new:true})
+      if(!membre){
+        throw new NotFoundException('membre not found for updated here status of paid')
+      }
+      return membre
+
+      
+     
+  }
+  async updatePaidMembreForClub(membreId:string,clubId:string){
+
+    const membre=await this.membreModel.findOneAndUpdate({_id:membreId,role:"membre","club.clubId":clubId},{$set:{'club.$.isPaid':true}},{new:true})
+    if(!membre){
+      throw new NotFoundException('membre not found for updated here status of paid for club')
+    }
+    return membre
+
+    
+   
+}
 }
