@@ -15,7 +15,7 @@ export class ClubPaiement {
 }
 export const ClubPaiementSchema = SchemaFactory.createForClass(ClubPaiement);
 
-@Schema()
+@Schema({timestamps:true})
 export class EventPaiement {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'event' })
   eventId: Types.ObjectId;

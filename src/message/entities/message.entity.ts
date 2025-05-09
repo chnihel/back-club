@@ -4,7 +4,9 @@ import mongoose, { Types } from "mongoose";
 @Schema({ timestamps: true })
 export class Message {
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'user' })
-    sender: Types.ObjectId[]
+    sender: Types.ObjectId
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'club' })
+    clubId: Types.ObjectId
     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'user' }] })
     recepient: Types.ObjectId[]
     @Prop()
