@@ -6,8 +6,8 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 @Controller('message')
 export class MessageController {
   constructor(private readonly messageService: MessageService) {}
-  @Get('club/:clubId')
+ /*  @Get('club/:clubId')
 async getMessagesByClub(@Param('clubId') clubId: string) {
   return this.messageService.getMessage({ sender: '', content: '', recepient: [], clubId });
-}
+} */
 }
