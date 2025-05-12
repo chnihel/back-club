@@ -2,15 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClubDto, MembreBureauDto } from './dto/create-club.dto';
 import { UpdateClubDto } from './dto/update-club.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, Types } from 'mongoose';
 import { IClub, IMembreBureau } from './interface/interface.club';
 import { Iderigeant } from 'src/derigeant_club/interface/interface.derigeant';
+import { IMembre } from 'src/membre/interface/interface.membre';
 
 @Injectable()
 export class ClubService {
  
   constructor(
-    @InjectModel("club") private clubModel:Model<IClub>,@InjectModel("user") private derigeantModel:Model<Iderigeant>) {}
+    @InjectModel("club") private clubModel:Model<IClub>,@InjectModel("user") private derigeantModel:Model<Iderigeant>,@InjectModel("user") private membreModel:Model<IMembre>) {}
 
     //methode creat
      async ajouterclub(CreateclubDto:CreateClubDto):Promise<IClub> {
@@ -75,7 +76,7 @@ export class ClubService {
         populate: {
           path: 'membres',
         }
-      }).populate('membres').populate('guide').populate('multimedia').populate('reglement').populate('tutoriel').populate('membres').populate('derigentClub')
+      }).populate('membres').populate('guide').populate('multimedia').populate('reglement').populate('tutoriel').populate('membres').populate('derigentClub').populate('rapport')
       if(!getclub){
         throw new NotFoundException(`club avec l'id ${id}, existe pas `)
       }
@@ -123,5 +124,32 @@ if (membreBureauDto.image !== undefined) membre.image = membreBureauDto.image;
 
 
   }
+
+
+    //count membre qui suit un club specifique
+async countNbreMembreSuivi(clubId: string) {
+  try {
+    const nbMembrePaid = await this.membreModel.countDocuments({
+      role: "membre",
+      club: {
+        $elemMatch: {
+          clubId: new Types.ObjectId(clubId),
+          isPaid: true,
+        },
+      },
+    });
+
+    const club = await this.clubModel.findById(clubId).select("nomClub");
+
+    return {
+      count: nbMembrePaid,
+      nomClub: club?.nomClub || "Nom inconnu",
+    };
+  } catch (error) {
+    throw new Error("Erreur lors du comptage des membres");
+  }
+}
+
+
   
 }

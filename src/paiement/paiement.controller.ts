@@ -41,19 +41,25 @@ export class PaiementController {
     }
   }
   @Get('paiementSuccess')
-  async success(@Res() res: any, @Query('membreId') membreId: string, @Query('clubId') clubId: string) {
-    if (membreId && clubId) {
-      await this.MembreModel.findOneAndUpdate({_id:membreId,role:"membre"}, {
-        $push: {
-          club: {
-            clubId: new Types.ObjectId(clubId), 
-            isPaid: true
-          }
+async success(@Res() res: any, @Query('membreId') membreId: string, @Query('clubId') clubId: string) {
+  if (membreId && clubId) {
+    await this.MembreModel.updateOne(
+      {
+        _id: membreId,
+        role: "membre",
+        "club.clubId": clubId
+      },
+      {
+        $set: {
+          "club.$.isPaid": true
         }
-      });
-    }
-    return res.sendFile(join(__dirname, '..', '..', 'public', 'paiementSuccess.html'));
+      }
+    );
   }
+
+  return res.sendFile(join(__dirname, '..', '..', 'public', 'paiementSuccess.html'));
+}
+
 
    @Get('paiementEvent')
   async successEvent(@Res() res: any, @Query('membreId') membreId: string,@Query('eventId') eventId: string
@@ -91,19 +97,9 @@ export class PaiementController {
       return res.sendFile(join(__dirname,  '..', '..', 'public', 'paiementFailed.html'));
     }
 
-    /* @Post('webhook')
-  @HttpCode(200)
-  async handleWebhook(
-    @Req() request: Request,
-    @Res() response: Response,
-    @Headers('stripe-signature') signature: string
-  ) {
-    const rawBody = (request as any).rawBody; // à configurer dans main.ts
-    const result = await this.PaiementService.handleStripeWebhook(rawBody, signature);
-    if (result) {
-      response.send({ received: true });
-    } else {
-      response.status(400).send(`Webhook Error`);
-    }
-  } */
+@Get('testUpdatePaiement')
+async testUpdatePaiement() {
+  await this.PaiementService.updateExpiredPaiements();
+  return { message: 'Mise à jour des paiements expirés effectuée.' };
+}
 }

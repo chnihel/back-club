@@ -6,11 +6,13 @@ import mongoose, { Model } from 'mongoose';
 import { Ievenement } from './interface/interface.event';
 import { Iderigeant } from 'src/derigeant_club/interface/interface.derigeant';
 import { IClub } from 'src/club/interface/interface.club';
+import { IMembre } from 'src/membre/interface/interface.membre';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class EvenementService {
   constructor(
-     @InjectModel("event") private evenementModel:Model<Ievenement>,@InjectModel("user") private derigeantModel:Model<Iderigeant>,@InjectModel("club") private clubModel:Model<IClub>) {}
+     @InjectModel("event") private evenementModel:Model<Ievenement>,@InjectModel("user") private derigeantModel:Model<Iderigeant>,@InjectModel("club") private clubModel:Model<IClub>,@InjectModel("user") private membreModel:Model<IMembre>) {}
  
      //methode creat
       async ajouterevenement(CreateevenementDto:CreateEvenementDto):Promise<Ievenement> {
@@ -86,6 +88,92 @@ export class EvenementService {
        return getevenement
    }
 
+    //count membre qui suit un event specifique
+async countNbreMembreSuiviParMois(eventId: string) {
+  try {
+    const objectId = new Types.ObjectId(eventId);
+    console.log("Début agrégation pour l'eventId:", objectId);
+
+    const debugMatch = await this.membreModel.find({
+      role: 'membre',
+      event: {
+        $elemMatch: {
+          eventId: objectId,
+          isPaid: true
+        }
+      }
+    });
+    console.log("Membres trouvés avant unwind:", debugMatch.length);
+    debugMatch.forEach((m, i) => {
+      console.log(`[${i}] - ${m.nom} | Events:`, m.event);
+    });
+
+    const stats = await this.membreModel.aggregate([
+      {
+        $match: {
+          role: 'membre',
+          event: {
+            $elemMatch: {
+              eventId: objectId,
+              isPaid: true
+            }
+          }
+        }
+      },
+      { $unwind: '$event' },
+      {
+        $match: {
+          'event.eventId': objectId,
+          'event.isPaid': true
+        }
+      },
+      {
+        $project: {
+          createdAt: {
+            $toDate: '$event.createdAt'
+          }
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $sort: {
+          '_id.year': 1,
+          '_id.month': 1
+        }
+      }
+    ]);
+
+    const event = await this.evenementModel.findById(objectId).select("nomEvent");
+    console.log("Nom event:", event?.nomEvent);
+
+    return {
+      nomEvent: event?.nomEvent || "Nom inconnu",
+      data: stats.map(item => ({
+        month: `${item._id.month}/${item._id.year}`,
+        count: item.count
+      }))
+    };
+  } catch (error) {
+    console.error("Erreur agrégation:", error);
+    throw new Error('Erreur lors de la récupération des membres par mois');
+  }
+}
+
+
+
+
+
+
+
+     
 
    
 }

@@ -1,21 +1,23 @@
 import { Types } from "mongoose";
 import { CreateUserDto } from "src/user/dto/create-user.dto";
-export class CreatePaiementClub{
+export class CreatePaiementClub {
     clubId: Types.ObjectId;
     isPaid: boolean;
 
 }
-export class CreatePaiementEvent{
+export class CreatePaiementEvent {
     eventId: Types.ObjectId;
     isPaid: boolean;
 
 }
 export class CreateMembreDto extends CreateUserDto {
-    role:string
-    roleInClub?:string
-  
+    role: string
+    roleInClub?: string
 
-    club: CreatePaiementClub[] 
+
+    club: CreatePaiementClub[]
     event: CreatePaiementEvent[]
-    
+    commentaire: Types.ObjectId[]
+
+
 }

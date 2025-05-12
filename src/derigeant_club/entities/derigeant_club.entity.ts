@@ -11,6 +11,7 @@ export class DerigeantClub extends User {
    evenement: Types.ObjectId[]
    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ressource' }],default: [] })
    ressource: Types.ObjectId[]
+   
 
 }
 export const derigeantSchema = SchemaFactory.createForClass(DerigeantClub)

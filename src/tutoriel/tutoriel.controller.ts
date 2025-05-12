@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, HttpStatus, Put, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
 import { TutorielService } from './tutoriel.service';
 import { CreateTutorielDto } from './dto/create-tutoriel.dto';
 import { UpdateTutorielDto } from './dto/update-tutoriel.dto';
@@ -8,33 +8,36 @@ import { extname } from 'path';
 @Controller('tutoriel')
 export class TutorielController {
   constructor(private readonly tutorielService: TutorielService) {}
-  @UseInterceptors(FileInterceptor('video', {
-    storage: diskStorage({
-      destination: './storage', 
-      filename: (req, file, cb) => {
-        const uniqueName = `${Date.now()}${extname(file.originalname)}`;
-        cb(null, uniqueName);
-      }
-    })
-  }))
-  @Post()
-  async créertutoriel(@Res() response,@Body() CreatetutorielDto:CreateTutorielDto,@UploadedFile() file,){
-    try{
-      if (file) {
-        CreatetutorielDto.video = file.filename; 
-      }
-      const newtutoriel=await this.tutorielService.ajoutertutoriel(CreatetutorielDto)
-      return response.status(200).json({
-        message:"L'hôtelier a été créé avec succès",
-        newtutoriel
-      })
+ @Post()
+@UseInterceptors(FileInterceptor('video', {
+  storage: diskStorage({
+    destination: './storage',
+    filename: (req, file, cb) => {
+      const uniqueName = `${Date.now()}${extname(file.originalname)}`;
+      cb(null, uniqueName);
     }
-    catch(error)
-    {return response.status(HttpStatus.BAD_REQUEST).json({
-      message:"Essaie encore"+error
-    })
+  })
+}))
+async créertutoriel(
+  @Body() CreatetutorielDto: CreateTutorielDto,
+  @UploadedFile() file,
+) {
+  try {
+    if (file) {
+      CreatetutorielDto.video = file.filename;
     }
+
+    const newtutoriel = await this.tutorielService.ajoutertutoriel(CreatetutorielDto);
+
+    return {
+      message: "L'hôtelier a été créé avec succès",
+      newtutoriel
+    };
+  } catch (error) {
+    throw new BadRequestException("Erreur lors de la création du tutoriel : " + error.message);
   }
+}
+
   @Get()
     async listetutoriel(@Res()reponse){
     try {

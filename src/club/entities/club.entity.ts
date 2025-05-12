@@ -51,5 +51,7 @@ export class Club {
      tutoriel: Types.ObjectId[]
      @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ressource' }] })
      multimedia: Types.ObjectId[]
+     @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'rapport' }] })
+     rapport: Types.ObjectId[]
 }
 export const clubSchema = SchemaFactory.createForClass(Club)

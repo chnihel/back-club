@@ -19,6 +19,8 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { PaiementModule } from './paiement/paiement.module';
 import { SuperAdminModule } from './super_admin/super_admin.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { RapportModule } from './rapport/rapport.module';
 
 @Module({
 
@@ -41,6 +43,8 @@ import { SuperAdminModule } from './super_admin/super_admin.module';
     ConfigModule.forRoot({isGlobal: true}),
     PaiementModule,
     SuperAdminModule,
+    ScheduleModule.forRoot(),
+    RapportModule
   ],
 
   controllers: [AppController],

@@ -14,7 +14,7 @@ export class TutorielService {
 
     //methode creat
      async ajoutertutoriel(CreatetutorielDto:CreateTutorielDto):Promise<ITutoriel> {
-      const newtutoriel =await new this.tutorielModel(CreatetutorielDto)
+      const newtutoriel = new this.tutorielModel(CreatetutorielDto)
       const savetutoriel= await newtutoriel.save() as ITutoriel
       const clubId= await this.clubModel.findById(CreatetutorielDto.club)
       if(clubId){ 
@@ -64,10 +64,17 @@ export class TutorielService {
     }
     //methode get by id
     async getbyid(id:string): Promise<ITutoriel>{
-      const gettutoriel=await this.tutorielModel.findById(id)
+      const gettutoriel=await this.tutorielModel.findById(id).populate({
+    path: 'commentaire',
+    populate: {
+      path: 'membre',
+      select: 'nom prenom',
+    },
+  })
       if(!gettutoriel){
         throw new NotFoundException(`tutoriel avec l'id ${id}, existe pas `)
       }
       return gettutoriel
   }
+
 }

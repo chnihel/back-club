@@ -81,4 +81,24 @@ export class EvenementController {
           })
         }
       }
+
+     /*   @Get('statistique/event/:eventId')
+async getNombreParticipants(@Param('eventId') eventId: string, @Res() res) {
+  try {
+    const count = await this.evenementService.countNbreMembreSuivi(eventId); 
+    const event = await this.evenementService.getbyid(eventId); 
+    return res.status(200).json({
+      nomEvent: event?.nomEvent || 'Événement inconnu',
+      count,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Erreur serveur' });
+  }
+} */
+
+
+  @Get('statistique/event-month/:eventId')
+countWeekly(@Param('eventId') eventId: string) {
+  return this.evenementService.countNbreMembreSuiviParMois(eventId);
+}
 }

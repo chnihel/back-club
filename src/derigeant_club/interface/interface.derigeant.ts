@@ -6,6 +6,6 @@ export interface Iderigeant extends IUser{
     club:Types.ObjectId[]  
     evenement: Types.ObjectId[]  
     ressource: Types.ObjectId[]  
-
+  
     
 }

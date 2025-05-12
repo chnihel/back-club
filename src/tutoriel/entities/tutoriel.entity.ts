@@ -4,16 +4,19 @@ import { Ressource } from "src/ressources/entities/ressource.entity";
 
 @Schema()
 export class Tutoriel extends Ressource {
-    type:string
+    type: string
     @Prop()
-    niveau:string
+    niveau: string
     @Prop()
-    duree:string
+    duree: string
     @Prop()
-    video:string
-    @Prop({ type: mongoose.Schema.Types.ObjectId,ref: 'club'})
+    video: string
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'club' })
     club: Types.ObjectId;
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'commentaire' }], default: [] })
+    commentaire: Types.ObjectId[]
 
-   
+
 }
-export const tutorielSchema=SchemaFactory.createForClass(Tutoriel)
+
+export const tutorielSchema = SchemaFactory.createForClass(Tutoriel)

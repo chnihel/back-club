@@ -9,6 +9,8 @@ export class Mutimedia extends Ressource{
     format:string[]
      @Prop({ type: mongoose.Schema.Types.ObjectId,ref: 'club'})
     club: Types.ObjectId;
+    @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'commentaire' }],default: [] })
+    commentaire: Types.ObjectId[]
     
   
 }

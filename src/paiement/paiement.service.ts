@@ -8,6 +8,8 @@ import { Ipaiement } from './interface/interface.paiement';
 import { IClub } from 'src/club/interface/interface.club';
 import { IMembre } from 'src/membre/interface/interface.membre';
 import { Ievenement } from 'src/evenement/interface/interface.event';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { ClubPaiement } from 'src/membre/entities/membre.entity';
 
 @Injectable()
 export class PaiementService {
@@ -105,39 +107,32 @@ export class PaiementService {
       )
     }
   }
+//update date de paiement
+@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+async updateExpiredPaiements() {
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
-/*   async handleStripeWebhook(payload: Buffer, sig: string): Promise<boolean> {
-    let event: Stripe.Event;
+  console.log('Vérification des paiements avant :', oneYearAgo.toISOString());
 
-    try {
-      event = this.stripe.webhooks.constructEvent(
-        payload,
-        sig,
-        'whsec_tonSecretWebhook' // remplace avec ton vrai secret de webhook
-      );
-    } catch (err) {
-      console.error('⚠️ Webhook signature verification failed.', err.message);
-      return false;
+  const membres = await this.MembreModel.find({ role: "membre" });
+
+  for (const membre of membres) {
+    let updated = false;
+
+    for (const paiement of membre.club as unknown as ClubPaiement[]) {
+      if (paiement.isPaid && paiement.datePaiement && paiement.datePaiement < oneYearAgo) {
+        paiement.isPaid = false;
+        updated = true;
+      }
     }
 
-    // Gérer le type d’événement
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object as Stripe.Checkout.Session;
-
-      const clubId = session.metadata!.club;
-      const membreId = session.metadata!.membre;
-      const montant = Number(session.metadata!.montant);
-
-      await this.paiementModel.create({
-        club: clubId,
-        membre: membreId,
-        montant: montant,
-      });
-
-      console.log('✅ Paiement enregistré dans la base de données');
+    if (updated) {
+      await membre.save();
     }
+  }
 
-    return true;
-  } */
+  console.log('Paiements expirés mis à jour');
+}
 
 }

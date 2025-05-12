@@ -8,6 +8,7 @@ export class CreateDerigeantClubDto extends CreateUserDto {
     club:Types.ObjectId[] 
     evenement: Types.ObjectId[]  
     ressource: Types.ObjectId[]  
+  
 
      
     

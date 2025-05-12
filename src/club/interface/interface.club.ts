@@ -24,4 +24,6 @@ export interface IClub extends Document {
     tutoriel: Types.ObjectId[]
     guide: Types.ObjectId[]
     reglement: Types.ObjectId[]
+         rapport: Types.ObjectId[]
+    
 }

@@ -179,4 +179,16 @@ export class ClubController {
       })
     }
   }
+
+@Get('statistique/club/:clubId')
+async getNombreMembresSuivantClub(@Param('clubId') clubId: string, @Res() res) {
+  try {
+    const { count, nomClub } = await this.clubService.countNbreMembreSuivi(clubId);
+    return res.status(200).json({ clubId, nomClub, count });
+  } catch (error) {
+    console.error('Erreur dans getNombreMembresSuivantClub:', error);
+    return res.status(500).json({ message: 'Erreur serveur' });
+  }
+}
+
 }

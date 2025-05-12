@@ -65,7 +65,13 @@ export class MutimediaService {
     }
     //methode get by id
     async getbyid(id:string): Promise<IMultimedia>{
-      const getmultimedia=await this.multimediaModel.findById(id)
+      const getmultimedia=await this.multimediaModel.findById(id).populate({
+    path: 'commentaire',
+    populate: {
+      path: 'membre',
+      select: 'nom prenom',
+    },
+  })
       if(!getmultimedia){
         throw new NotFoundException(`multimedia avec l'id ${id}, existe pas `)
       }
