@@ -91,9 +91,26 @@
     <div class="container">
         <h2>✅ Paiement réussi</h2>
         <p>Merci pour votre confiance .</p>
+        <a id="downloadLink" target="_blank" rel="noopener noreferrer">Télécharger votre ticket</a>
+
+
         <button onclick="window.location.href='http://localhost:3000/homeMembre'">Retour au tableau de bord</button>
 
     </div>
+    <script>
+fetch(window.location.href)
+  .then(response => {
+    const ticketId = response.headers.get("ticketid");
+    if (ticketId) {
+      const link = document.getElementById("downloadLink");
+      link.href = `http://localhost:5000/ticket/download/${ticketId}`;
+      link.textContent = "Télécharger votre ticket 🎟️";
+    }
+  })
+  .catch(err => {
+    console.error("Erreur lors de la récupération du ticket :", err);
+  });
+</script>
 </body>
 
 </html>

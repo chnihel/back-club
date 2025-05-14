@@ -21,6 +21,7 @@ import { PaiementModule } from './paiement/paiement.module';
 import { SuperAdminModule } from './super_admin/super_admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RapportModule } from './rapport/rapport.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
 
@@ -44,7 +45,8 @@ import { RapportModule } from './rapport/rapport.module';
     PaiementModule,
     SuperAdminModule,
     ScheduleModule.forRoot(),
-    RapportModule
+    RapportModule,
+    TicketModule
   ],
 
   controllers: [AppController],

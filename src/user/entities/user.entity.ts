@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import * as argon2 from "argon2"
 import { Document } from "mongoose";
 
 @Schema({discriminatorKey:'role'})
